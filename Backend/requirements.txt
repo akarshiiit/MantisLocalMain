@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-multipart
+pymupdf
+tiktoken
+inferedge-moss
+python-dotenv
+supabase

@@ -14,24 +14,9 @@ CREATE TABLE products (
   company_id UUID REFERENCES companies(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
-
--- Resources Table
-CREATE TABLE resources (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
-  type TEXT NOT NULL CHECK (type IN ('manual', 'image', 'url')),
-  file_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
-);
-
--- Document Chunks Table (for RAG)
-CREATE TABLE document_chunks (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  resource_id UUID REFERENCES resources(id) ON DELETE CASCADE,
-  content TEXT NOT NULL,
-  embedding vector(768), -- Adjust dimensions based on the AI model used (e.g., Gemini)
+  doc_hash TEXT,
+  doc_status TEXT DEFAULT 'pending',
+  chunk_count INTEGER DEFAULT 0,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
@@ -52,6 +37,3 @@ CREATE TABLE chat_messages (
   content TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
-
--- Optional: Create index for vector similarity search (HNSW)
--- CREATE INDEX ON document_chunks USING hnsw (embedding vector_cosine_ops);
